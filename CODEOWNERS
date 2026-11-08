@@ -1,0 +1,9 @@
+# Dono de cada área. Todo PR que toca a área exige revisão do dono.
+# Área = crate (crates/<nome>) ou módulo com mod.rs próprio.
+# Área sem dono abaixo = livre para reivindicar por issue (assignee).
+
+*                         @LucasGarioli
+
+# docs/adr/ e o contrato público mudam só por ADR aprovada
+docs/adr/                 @LucasGarioli
+crates/simulation-api/    @LucasGarioli

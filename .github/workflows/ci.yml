@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  fronteira:
+    name: Fronteira pública/privada e arquivos obrigatórios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Arquivos obrigatórios
+        run: |
+          for f in LICENSE NOTICE README.md CODEOWNERS CONTRIBUTING.md docs/plano/mapa.md; do
+            test -f "$f" || { echo "falta $f"; exit 1; }
+          done
+          grep -q "Apache License" LICENSE || { echo "LICENSE não é Apache-2.0"; exit 1; }
+      - name: Nada do privado referenciado aqui
+        run: |
+          # nomes de crates/serviços que só existem no repositório privado
+          if grep -rInE --exclude-dir=.git --exclude=ci.yml \
+               "resonance-pro|acoustic-engine|fem-engine|auth-engine|apps/api|BEGIN (RSA|OPENSSH) PRIVATE KEY|AKIA[0-9A-Z]{16}" . ; then
+            echo "referência a conteúdo privado ou segredo encontrada"; exit 1
+          fi
+
+  rust:
+    name: Rust (fmt, clippy, test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Há workspace Rust?
+        id: has
+        run: |
+          if [ -f Cargo.toml ]; then echo "yes=true" >> "$GITHUB_OUTPUT"; else echo "yes=false" >> "$GITHUB_OUTPUT"; echo "sem Cargo.toml ainda: etapa pulada"; fi
+      - uses: dtolnay/rust-toolchain@stable
+        if: steps.has.outputs.yes == 'true'
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --all -- --check
+        if: steps.has.outputs.yes == 'true'
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+        if: steps.has.outputs.yes == 'true'
+      - run: cargo test --workspace
+        if: steps.has.outputs.yes == 'true'

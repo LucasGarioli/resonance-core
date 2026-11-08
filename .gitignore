@@ -1,0 +1,12 @@
+/target
+**/*.rs.bk
+*.pdb
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+/vcpkg_installed
+.env
+*.key
+*.pem

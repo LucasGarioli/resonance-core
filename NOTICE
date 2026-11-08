@@ -1,0 +1,11 @@
+Resonance Core
+Copyright 2026 Lucas Garioli
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+"Resonance", "Resonance Core", "Resonance Pro" and the Resonance logo are
+trademarks of Lucas Garioli and are not covered by the Apache License.
+
+Third-party components (added as the code lands; each keeps its own license):
+- Open CASCADE Technology (OCCT): LGPL-2.1 with OCCT exception
+- wgpu, winit, egui: MIT OR Apache-2.0
